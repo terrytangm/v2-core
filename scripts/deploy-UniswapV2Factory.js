@@ -7,21 +7,13 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  const feeToSetter = (await hre.ethers.getSigner()).address;
+  const unisV2Factory = await hre.ethers.deployContract("UniswapV2Factory", [feeToSetter]);
 
-  const lockedAmount = hre.ethers.utils.parseEther("0.001");
-
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
-
-  await lock.deployed();
+  await unisV2Factory.deployed();
 
   console.log(
-    `Lock with ${ethers.utils.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    `UniswapV2Factory deployed to ${unisV2Factory.address}`
   );
 }
 
